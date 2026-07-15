@@ -1,0 +1,29 @@
+{
+  "method": "lora_r4",
+  "trainable_params": 16898,
+  "total_params": 4272898,
+  "lora_params": 16384,
+  "head_params": 514,
+  "train_time_per_epoch": 0.45659391085306805,
+  "final_val_acc": 0.52,
+  "rank": 4,
+  "alpha": 16,
+  "config": {
+    "task": "SST-2",
+    "num_train": 500,
+    "num_val": 100,
+    "max_seq_len": 128,
+    "batch_size": 16,
+    "num_classes": 2,
+    "num_epochs": 3,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "seed": 42,
+    "device": "cuda",
+    "pretrained_ckpt": "checkpoints/bert_pretrain.pt",
+    "hidden_size": 256,
+    "num_layers": 4,
+    "num_heads": 4,
+    "intermediate_size": 512
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "shared": {
+    "vocab": "data/vocab.txt",
+    "max_seq_len": 128,
+    "batch_size": 16,
+    "seed": 42,
+
+    "hidden_size": 256,
+    "num_layers": 4,
+    "num_heads": 4,
+    "intermediate_size": 512
+  },
+
+  "pretrain": {
+    "fraction": 0.1,
+    "val_fraction": 0.5,
+    "mlm_probability": 0.15,
+
+    "num_epochs": 5,
+    "lr": 1e-4,
+    "weight_decay": 0.01,
+    "beta1": 0.9,
+    "beta2": 0.999,
+    "warmup_ratio": 0.1,
+    "max_norm": 1.0,
+    "val_every": 1,
+
+    "ckpt_path": "checkpoints/bert_pretrain.pt",
+    "fig_path": "figures/loss_pretrain.png",
+    "log_dir": "logs"
+  },
+
+  "finetune": {
+    "pretrained_ckpt": "checkpoints/bert_pretrain.pt",
+    "num_train": 500,
+    "num_val": 100,
+    "num_classes": 2,
+
+    "num_epochs": 3,
+    "lr": 2e-5,
+    "weight_decay": 0.01,
+    "max_norm": 1.0,
+
+    "ckpt_path": "checkpoints/bert_finetune_full.pt",
+    "result_path": "results/full_finetune.json"
+  },
+
+  "lora": {
+    "pretrained_ckpt": "checkpoints/bert_pretrain.pt",
+    "rank": 8,
+    "alpha": 16,
+    "lr": 1e-3
+  }
+}

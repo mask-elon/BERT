@@ -1,0 +1,42 @@
+# === Cursor / MCP 配置（含 token，切勿上传）===
+.cursor/mcp.json
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# === 虚拟环境 ===
+venv/
+env/
+.venv/
+.env
+
+# === PyTorch / 训练产物 ===
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+wandb/
+runs/
+tb_logs/
+
+# 大模型/数据集缓存
+~/.cache/huggingface/
+.cache/
+
+# === 编辑器 / OS ===
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp

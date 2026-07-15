@@ -1,0 +1,33 @@
+---
+description: "GPU 优先：所有实验必须用 GPU 运行，禁止静默回退 CPU"
+alwaysApply: true
+---
+
+# GPU 优先（最高优先级约束）
+
+本约束优先级高于其他规则，适用于本项目的所有训练/实验脚本。
+
+## 硬性要求
+- 所有实验默认必须在 GPU（CUDA）上运行，**严禁静默回退到 CPU**。
+- 运行任何训练/实验脚本前，必须确认 `torch.cuda.is_available()` 为 `True`；
+  若为 `False`，应**直接抛出清晰错误并提示用户检查环境**（而不是用 CPU 继续）。
+- 设备选择禁止写成 `torch.device("cuda" if torch.cuda.is_available() else "cpu")`
+  这种静默回退形式。
+
+## 唯一例外
+- 仅当用户**显式要求**时（如传入 `--allow_cpu` 参数，或明确说“用 CPU”），
+  才允许在 CPU 上运行，且需打印明显的警告。
+
+## 正确示例
+```python
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+elif args.allow_cpu:
+    print("[警告] 未检测到 GPU，按 --allow_cpu 使用 CPU 运行。")
+    device = torch.device("cpu")
+else:
+    raise RuntimeError(
+        "未检测到可用 GPU，torch.cuda.is_available()=False。"
+        "所有实验默认必须用 GPU。请检查 CUDA 版 torch，或显式加 --allow_cpu。"
+    )
+```

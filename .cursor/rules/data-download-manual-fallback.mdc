@@ -1,0 +1,47 @@
+---
+description: "下载失败必须给用户官方地址交人工下载，禁止静默回退假数据；实在做不了的任务交人工"
+alwaysApply: true
+---
+
+# 数据下载与人工兜底（最高优先级约束）
+
+本约束优先级高于其他规则，适用于本项目所有涉及下载数据集/模型/依赖的脚本与流程。
+背景教训：SST-2 用 `datasets` 库下载失败后代码静默回退到内置“假数据”，导致训练出假结果（val_acc=1.0）。此类静默伪造**绝对禁止**。
+
+## 三条硬性准则
+1. **下载失败禁止静默兜底**：当需要下载数据集/模型/依赖且下载失败时，**不允许**静默回退到假数据/占位数据/随机数据继续跑。必须**立即停下来报错**，并把**确切的下载 URL** 和**手动下载/放置说明**清楚地告诉用户，交由用户手动下载。
+2. **无法自动完成的任务交人工（human handoff）**：需要登录、验证码、手动下载、付费授权、需要人工判断的操作等，无法自动完成时应**明确交给人工**处理，而不是硬凑、猜测或伪造结果。
+3. **失败要显式、可见**：报错信息必须包含官方 URL、期望的本地路径、可选镜像方案，方便用户一步到位手动处理。
+
+## 正确 / 错误做法示例
+
+```python
+# ❌ 错误：下载失败静默回退假数据（严禁）
+try:
+    ds = load_dataset("stanfordnlp/sst2")
+except Exception:
+    ds = make_fake_data()  # 静默造假，导致 val_acc=1.0 的假结果
+
+# ✅ 正确：下载失败抛错并打印官方 URL + 放置说明，交人工
+try:
+    ds = load_dataset("stanfordnlp/sst2")
+except Exception as e:
+    raise RuntimeError(
+        "SST-2 数据集下载失败。请手动下载后重试，禁止使用假数据。\n"
+        "官方地址：https://huggingface.co/datasets/stanfordnlp/sst2\n"
+        "备选镜像：设置环境变量 HF_ENDPOINT=https://hf-mirror.com 后重试\n"
+        "放置路径：HuggingFace 缓存 C:\\Users\\mac\\.cache\\huggingface 或项目 data/ 目录\n"
+        f"原始错误：{e}"
+    ) from e
+```
+
+## 本项目常用数据集官方下载地址（供人工下载）
+- **WikiText-2（预训练）**：https://huggingface.co/datasets/Salesforce/wikitext ，使用配置 `wikitext-2-raw-v1`
+- **SST-2（微调）**：https://huggingface.co/datasets/stanfordnlp/sst2
+  - GLUE 版本备选：https://huggingface.co/datasets/nyu-mll/glue ，使用 `sst2` 配置
+- **下载失败镜像备选**：设置环境变量 `HF_ENDPOINT=https://hf-mirror.com`（PowerShell：`$env:HF_ENDPOINT="https://hf-mirror.com"`）后重试。
+
+## 本地放置目录约定
+- HuggingFace 默认缓存：`C:\Users\mac\.cache\huggingface`（`datasets`/`transformers` 自动读取此处）。
+- 或放到项目本地目录：`D:\Bert-LoRa代码\data\`（如手动下载的原始文件，脚本从此目录读取）。
+- 手动下载后，优先复用缓存/本地目录，避免重复联网。

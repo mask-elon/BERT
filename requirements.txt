@@ -1,0 +1,21 @@
+# ============================================================================
+# requirements.txt  --  Bert-LoRa 项目依赖
+# ----------------------------------------------------------------------------
+# 安装说明：
+#   1) torch 必须从 PyTorch CUDA 专用源安装（cu128，对应 CUDA 12.8），
+#      不要用清华源装 torch，否则会拿到 CPU 版本：
+#        pip install torch==2.11.0+cu128 --index-url https://download.pytorch.org/whl/cu128
+#   2) 其余依赖使用清华镜像（TUNA）安装即可：
+#        pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+#      （requirements.txt 里已注释掉 torch，请按第 1 步单独安装）
+# ============================================================================
+
+# --- 深度学习框架（务必用 CUDA 源，见上方说明；此处仅记录版本，默认注释） ---
+# torch==2.11.0+cu128   # --index-url https://download.pytorch.org/whl/cu128
+
+# --- 核心依赖（清华镜像安装） ---
+numpy==2.5.1
+tokenizers==0.23.1
+datasets==5.0.0
+tqdm==4.68.4
+matplotlib==3.10.7   # Day 3 预训练 loss 曲线绘制
